@@ -831,24 +831,37 @@
         }
 
         // --- Form Handling ---
-        function handleSubmit(e) {
+        async function handleSubmit(e) {
             e.preventDefault();
             const alertBox = document.getElementById('form-alert');
             const name = document.getElementById('name').value;
+            try{
+               const response = await fetch(form.action, {
+                   method: form.method ,
+                   body: new FormData(form) ,
+                   headers: {
+                       'Accept': 'application/json'
+                   }
+               });
 
+               if (response.ok) {
             // Show Feedback Alert
             alertBox.className = "mb-6 p-4 rounded-xl text-sm font-medium bg-green-100 border border-green-300 text-green-800";
             alertBox.innerHTML = `<i class="fa-solid fa-circle-check mr-2"></i> Terima kasih, <strong>${name}</strong>! Pesan Anda telah terkirim. Panitia/Admin kami akan segera menghubungi Anda melalui WhatsApp.`;
             alertBox.classList.remove('hidden');
 
             // Reset Form
-            document.getElementById('contact-form').reset();
+            form.reset();
 
             // Auto hide message after 6 seconds
             setTimeout(() => {
                 alertBox.classList.add('hidden');
             }, 6000);
-        }
+        } else {
+            alert("Gagal mengirim pesan. Pastikan ID Formspree sudah benar.");
+               }
+            } catch (error) {
+            }
     </script>
 </body>
 </html>
